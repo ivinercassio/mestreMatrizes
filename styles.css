@@ -1,0 +1,57 @@
+* {
+    color: white;
+}
+
+body {
+    background-image: url(background.jpg);
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: medium;
+    margin-inline: 20%;
+}
+
+/* title and sub-title */
+body div {
+    margin-top: 5%;
+}
+h1,h5 {
+    text-align: center;
+    font-style: oblique;    
+}
+
+/* form and contents */
+form {
+    background-color: black;
+    padding: 5%;
+    margin-top: 5%;
+}
+form label {
+    font-size: large;
+}
+form select option {
+    color: black;
+}
+button, a {
+    width: 15%;
+}
+#hiddenBox {
+    width: 33%;
+    float: inline-start;
+}
+
+/* buttons */
+.btnOk {
+    float: inline-end;
+}
+.btnGoToBack {
+    float: inline-start;
+}
+
+/* table */
+table {
+    width: 50%;
+}
+
+/* resolution */
+textarea {
+    color: black;
+}
