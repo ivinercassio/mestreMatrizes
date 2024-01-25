@@ -1,7 +1,14 @@
 
 <?php
+    include("Matrix.php");
+
+    if (!isset($_POST["row"]) || !isset($_POST["column"]) || !isset($_POST["function"])) {
+        header('Location: http://localhost/mestreMatrizes/index.php');
+    }
+
     $row = $_POST["row"];
     $column = $_POST["column"];
+    $function = $_POST["function"];
 
     if(isset($_POST["row2"]) && isset($_POST["column2"])){
         $row2 = $_POST["row2"];
@@ -14,6 +21,9 @@
             $matrix[$i][$j] = $_POST[$name];
         }
     }
+
+    $objMatrix = new Matrix($column, $row);
+    $objMatrix->receberMatriz($matrix);
 ?>
 
 <!DOCTYPE html>
@@ -40,13 +50,97 @@
                 for ($i=0; $i < $row; $i++) { 
                     echo "<tr>";
                     for ($j=0; $j < $column; $j++) { 
-                        echo "<td><input class='form-control' type='number' name='{$name}' id='{$name}' value='{$matrix[$i][$j]}' disabled></td>";
+                        echo "<td><input class='form-control disabled' type='number' name='{$name}' id='{$name}' value='{$matrix[$i][$j]}' disabled></td>";
                     }
                     echo "</tr>";
                 }
             ?>
             </tbody>
-        </table>";
+        </table>
+
+        <form action="" method="post">
+            <h5>Resultado:</h5>
+            <h3 class="text-center">
+                <?php
+                    switch ($function) {
+                        case "E":
+                            echo "Matriz Escalonada";
+                            break;
+                        case "GJ":
+                            echo "Matriz Reduzida por Gauss-Jordan";
+                            break;
+                        default:
+                            echo "Matriz Calculada";
+                            break;
+                    }
+                ?>
+            </h3>
+
+            <table align="center" class="mt-5">
+                <tbody>
+                <?php
+                    $answer = $objMatrix->isEmpty();
+                    if($answer){
+                        echo "<div id='alertMsg' class='alert text-center' role='alert'>
+                            <span>
+                                <b>Ops! A matriz está vazia ou nula</b><br>
+                                Tente novamente
+                            </span>
+                        </div>";
+                    }else{
+                        switch ($function) {
+                            case "E":
+                                for ($i=0; $i < $row; $i++) { 
+                                    $objMatrix->escalonarMatriz($i);
+                                }
+                                break;
+                            case "GJ":
+                                for ($i=0; $i < $row; $i++) { 
+                                    $objMatrix->escalonarMatriz($i);
+                                }
+                                $objMatrix->reduzirMatrizPorLinhas();
+                                break;
+                            default:
+                                echo "Matriz Calculada";
+                                break;
+                        }
+                        
+    
+                        for ($i=0; $i < $row; $i++) { 
+                            echo "<tr>";
+                            for ($j=0; $j < $column; $j++) { 
+                                echo "<td><input class='form-control disabled' type='number' name='{$name}' id='{$name}' value='{$objMatrix->getMatrix()[$i][$j]}' disabled></td>";
+                            }
+                            echo "</tr>";
+                        }
+                    }
+                    
+                    // Matriz matriz = Matriz.getInstance(linhas, colunas);
+                    // matriz.receberMatriz(scanner);
+            
+                    // System.out.println("\nEscalonamento da matriz\n");
+                    // for (int i = 0; i < linhas; i++) 
+                    //     matriz.escalonarMatriz(i);
+            
+                    // System.out.println("\nRedução da matriz por linhas\n");
+                    // matriz.reduzirMatrizPorLinhas();
+                ?>
+                </tbody>
+            </table>
+
+            <div class='row'>
+                <div>
+                    <a class='rounded-pill btn btn-outline-info mt-5 btnGoToBack' href='#'>
+                        <svg xmlns='http://www.w3.org/2000/svg' width='25' height='25' fill='currentColor' class='bi bi-arrow-left' viewBox='0 0 16 16'>
+                            <path fill-rule='evenodd' d='M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8'/>
+                        </svg>
+                    </a>
+                    <a class='rounded-pill btn btn-outline-info mt-5 btnOk' href='http://localhost/mestreMatrizes/'>Pronto</a>
+                </div>
+            </div>
+
+            
+        </form>
     
     </body>
 
