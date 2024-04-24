@@ -18,12 +18,15 @@
     for ($i=0; $i < $row; $i++) { 
         for ($j=0; $j < $column; $j++) { 
             $name = "cell" . $i . "" . $j;
-            $matrix[$i][$j] = $_POST[$name];
+            if(isset($_POST[$name]))
+                $matrix[$i][$j] = $_POST[$name];
         }
     }
 
     $objMatrix = new Matrix($column, $row);
-    $objMatrix->receberMatriz($matrix);
+    if(isset($matrix)){
+        $objMatrix->receberMatriz($matrix);
+    }
 ?>
 
 <!DOCTYPE html>
@@ -47,12 +50,14 @@
         <table align='center' class='mt-5'>
             <tbody>
             <?php
-                for ($i=0; $i < $row; $i++) { 
-                    echo "<tr>";
-                    for ($j=0; $j < $column; $j++) { 
-                        echo "<td><input class='form-control disabled' type='number' name='{$name}' id='{$name}' value='{$matrix[$i][$j]}' disabled></td>";
+                if(isset($matrix)){
+                    for ($i=0; $i < $row; $i++) { 
+                        echo "<tr>";
+                        for ($j=0; $j < $column; $j++) { 
+                            echo "<td><input class='form-control disabled' type='number' name='{$name}' id='{$name}' value='{$matrix[$i][$j]}' disabled></td>";
+                        }
+                        echo "</tr>";
                     }
-                    echo "</tr>";
                 }
             ?>
             </tbody>
@@ -90,47 +95,47 @@
                     }else{
                         switch ($function) {
                             case "E":
-                                for ($i=0; $i < $row; $i++) { 
+                                for ($i=0; $i < $row; $i++) 
                                     $objMatrix->escalonarMatriz($i);
-                                }
                                 break;
                             case "GJ":
-                                for ($i=0; $i < $row; $i++) { 
+                                for ($i=0; $i < $row; $i++) 
                                     $objMatrix->escalonarMatriz($i);
-                                }
                                 $objMatrix->reduzirMatrizPorLinhas();
                                 break;
+                            case "A":
+                                $answer = $objMatrix->addition($objMatrix2);
+                                break;
                             default:
-                                echo "Matriz Calculada";
+                                $answer = $objMatrix->multiplication($objMatrix2);
                                 break;
                         }
                         
     
-                        for ($i=0; $i < $row; $i++) { 
-                            echo "<tr>";
-                            for ($j=0; $j < $column; $j++) { 
-                                echo "<td><input class='form-control disabled' type='number' name='{$name}' id='{$name}' value='{$objMatrix->getMatrix()[$i][$j]}' disabled></td>";
+                        if($function == "A" || $function == "B")
+                            for ($i=0; $i < $answer->getRow(); $i++) { 
+                                echo "<tr>";
+                                for ($j=0; $j < $answer->getColumn(); $j++) 
+                                    echo "<td><input class='form-control disabled' type='number' value='{$answer->getMatrix()[$i][$j]}' disabled></td>";
+                                echo "</tr>";
                             }
-                            echo "</tr>";
-                        }
+                        else
+                            for ($i=0; $i < $row; $i++) { 
+                                echo "<tr>";
+                                for ($j=0; $j < $column; $j++) 
+                                        echo "<td><input class='form-control disabled' type='number' name='{$name}' id='{$name}' value='{$objMatrix->getMatrix()[$i][$j]}' disabled></td>";
+                                echo "</tr>";
+                            }
+                        
                     }
-                    
-                    // Matriz matriz = Matriz.getInstance(linhas, colunas);
-                    // matriz.receberMatriz(scanner);
-            
-                    // System.out.println("\nEscalonamento da matriz\n");
-                    // for (int i = 0; i < linhas; i++) 
-                    //     matriz.escalonarMatriz(i);
-            
-                    // System.out.println("\nRedução da matriz por linhas\n");
-                    // matriz.reduzirMatrizPorLinhas();
                 ?>
                 </tbody>
             </table>
 
             <div class='row'>
                 <div>
-                    <a class='rounded-pill btn btn-outline-info mt-5 btnGoToBack' href='#'>
+                    <!-- ALTERAR DEPOIS PARA O VOLTAR NAO APAGAR A MATRIZ -->
+                    <a class='rounded-pill btn btn-outline-info mt-5 btnGoToBack' href='http://localhost/mestreMatrizes/'>
                         <svg xmlns='http://www.w3.org/2000/svg' width='25' height='25' fill='currentColor' class='bi bi-arrow-left' viewBox='0 0 16 16'>
                             <path fill-rule='evenodd' d='M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8'/>
                         </svg>

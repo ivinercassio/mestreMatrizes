@@ -13,6 +13,9 @@
         }
 
         // the class's methods
+
+        // public functions
+
         public function receberMatriz($matrix){
             if(isset($matrix)){
                 $this->matrix = $matrix;
@@ -22,19 +25,52 @@
         }
 
         public function isEmpty(){
-            for ($i=0; $i < $this->row; $i++) { 
-                for ($j=0; $j < $this->column; $j++) { 
-                    if ($this->matrix[$i][$j] != 0) {
+            if($this->matrix == null)
+                return true;
+            for ($i=0; $i < $this->row; $i++) 
+                for ($j=0; $j < $this->column; $j++) 
+                    if ($this->matrix[$i][$j] != 0) 
                         return false;
-                    }
-                }
-            }
             return true;
+        }
+        
+        public function _addition($outher){
+            $answer = __construct($this->column, $this->row);
+            for ($i=0; $i < $this->row; $i++) 
+                for ($j=0; $j < $this->column; $j++) 
+                    $answer = $this->matrix[$i][$j] + $outher->getMatrix()[$i][$j];
+            return $answer;
+        }
+
+        public function canAdditionMatrix($outher){
+            if ($this->matrix == null || $outher == null)
+                return false;
+            if($this->row == $outher->getRow() && $this->column == $outher->getColumn())
+                return true;
+            return false;
+        }
+        
+        private function multiplication($outher){
+            /* TRADURIR O CODIGO DE PYTHON PARA PHP
+            
+            for linhaResposta in range(2):
+                for colunaResposta in range(3):
+                    value = 0
+                    for colunaPrimeira in range(2):
+                        value = value + (primeira[linhaResposta][colunaPrimeira] * segunda[colunaPrimeira][colunaResposta])
+                    terceira[linhaResposta][colunaResposta] = value
+            */
+        }
+
+        public function canMultiplicationMatrix($outher){
+            if($this->matrix == null || $outher == null)
+                return false;
+            if($this->row == $outher->getColumn())
+                return true;
+            return false;
         }
 
         public function escalonarMatriz($reference){ // reference row
-            // every time the funciton is started, it is need to check whether the column has been summed to 1
-            // if so, 'reference' must also be added to 1
             $linhaPivo = $this->encontrarPivo($reference); 
             if($linhaPivo != -1) 
                 $this->trocarLinhas($linhaPivo, $reference);
@@ -43,6 +79,8 @@
             $linhaPivo = $reference;
             $this->zerarLinhasAbaixo($linhaPivo, $reference);
         }
+
+        // private functions
 
         private function encontrarPivo($reference){ // reference column
             for ($i = $reference; $i < $this->row; $i++)
@@ -60,19 +98,29 @@
                 $this->matrix[$to][$j] = $auxiliar;
             }
         }
-    
-        private function forcarPivo($row, $column) { // it means the position where the pivot is waited
-            $divisor = $this->matrix[$row][$column];
-            if ($divisor == 0 && ($column+1) < $this->column) {
-                // O PROBLEMA ESTAH AQUI. A FUNCAO PULA PARA A PROXIMA COLUNA CORRETAMENTE,
-                // MAS NAO AVISA O RESTANTE DO CODIGO. FAZENDO APARECER DOIS PIVOS NA MESMA COLUNA
-                forcarPivo($row, ($column+1)); // search the pivot on the next column
+
+        private function forcarPivo($row, $coluna) { // it means the position where the pivot is waited
+            $column = $this->column;
+            $divisor = $this->matrix[$row][$coluna];
+            if($divisor == 0){
+                $position = $this->buscarElementoNaoNulo($coluna);
+                if ($position != -1) {
+                    $this->trocarLinhas($position, $row);
+                    forcarPivo($row, $coluna);
+                }else if (($coluna+1) < $column) 
+                    forcarPivo($row, ($coluna+1));
+            }else{
+                for ($i= $coluna; $i < $column; $i++)
+                    $this->matrix[$row][$i] /= $divisor;
+                $this->zerarLinhasAbaixo($row, $coluna);
             }
-            else if ($divisor == 0) // caso o elemento seja nulo na ultima coluna
-                    return;
-                else
-                    for ($j = $column; $j < $this->column; $j++) 
-                        $this->matrix[$row][$j] /= $divisor;
+        }
+
+        private function buscarElementoNaoNulo($column){
+            for ($i = $column; $i < $this->row; $i++)
+                if($this->matrix[$i][$column] != 0)
+                    return $i;
+            return -1;
         }
 
         private function zerarLinhasAbaixo($linhaPivo, $column){ // linhaPivo: this function works below it
@@ -89,39 +137,40 @@
         }
 
         public function reduzirMatrizPorLinhas(){
-            $column = $this->posicaoUltimoPivo($this->row-1);
-            if ($column >= 0)
-                for ($i = $column; $i > 0; $i--) // 2 , 1 
-                    $this->zerarLinhasAcima($i);
+            $position = $this->posicaoUltimoPivo($this->row-1);
+            if ($position[1] >= 1)
+                for ($i= $position[1]; $i > 0; $i--) {
+                    $this->zerarLinhasAcima($position[0], $i);
+                    $position[0]--;
+                }
         }
-    
+
         private function posicaoUltimoPivo($linha){
             for ($i = 0; $i < $this->column; $i++)
-                if($this->matrix[$linha][$i] == 1)
-                    return $i;
+                if($this->matrix[$linha][$i] == 1){
+                    $position = [$linha, $i];
+                    return $position;
+                }
             return $this->posicaoUltimoPivo($linha-1);
         }
-    
-        private function zerarLinhasAcima($position){ // this is the pivot's position on the matrix's columns
-            $repeat = $this->column - $position; // ==  vai repetir 1 , 2
-            //              3           2 , 1
-            for ($i = 0; $i < $repeat; $i++) { 
-                $fator = $this->matrix[$position-1][$position]; 
-                echo "<br> ----------- 1° for ----------- <br>"; 
-                
-                for ($j = $position-1; $j < $this->column; $j++){
-                    echo "estou no for <br>"; 
-                    var_dump($fator); echo "<br>";
-                    $this->matrix[$position-1][$j] -= ($fator * $this->matrix[$position][$j]);
-                }
-                // for ($j = 0; $j < $this->column; $j++) 
-                //     $this->matrix[$position-1][$j] -= ($fator * $this->matrix[$position][$j]);
+
+        private function zerarLinhasAcima($linha, $coluna){ // this is the pivot's position on the matrix's columns
+            $column = $this->column;
+            for ($i=1; $i <= $coluna; $i++) { 
+                $fator = $this->matrix[$coluna-$i][$coluna];
+                for ($j=0; $j < $column; $j++) 
+                    $this->matrix[$coluna-$i][$j] -= ($fator * $this->matrix[$coluna][$j]); 
+                    
             }
         }
 
         // getters and setters
         public function getMatrix(){
             return $this->matrix;
+        }
+
+        public function getColumn(){
+            return $this->column;
         }
     }
 ?>

@@ -35,7 +35,7 @@
             if(($function == "E" || $function == "GJ") && !$firstTime){
                 echo "<form action='resolution.php' method='POST'>";
             }else{
-                echo "<form action='' method='POST'>";
+                echo "<form action='' id='formIndex' method='POST'>";
             }   
         ?>
             <div class="row">
@@ -91,15 +91,28 @@
                     <div class='row mt-3'>
                         <div id='hiddenBox' class='col'></div>
                         <div class='col'>
-                            <label class='form-label' for='column'>Nº Colunas</label>
-                            <input class='form-control' type='number' name='column' id='column' min='1' value='{$column2}'>
+                            <label class='form-label' for='column2'>Nº Colunas</label>
+                            <input class='form-control' type='number' name='column2' id='column2' min='1' value='{$column2}'>
                         </div>
                         <div class='col'>
-                            <label class='form-label' for='row'>Nº Linhas</label>
-                            <input class='form-control' type='number' name='row' id='row' min='1' value='{$row2}'>
+                            <label class='form-label' for='row2'>Nº Linhas</label>
+                            <input class='form-control' type='number' name='row2' id='row2' min='1' value='{$row2}'>
                         </div>
                     </div>";
+
+                    echo "<div class='row'>
+                    <div>
+                        <a class='rounded-pill btn btn-outline-info mt-5 btnGoToBack' href='http://localhost/mestreMatrizes/'>
+                            <svg xmlns='http://www.w3.org/2000/svg' width='25' height='25' fill='currentColor' class='bi bi-arrow-left' viewBox='0 0 16 16'>
+                                <path fill-rule='evenodd' d='M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8'/>
+                            </svg>
+                        </a>
+                            <button id='submit' class='rounded-pill btn btn-outline-info mt-5 btnOk' type='submit'>OK</button>
+                        </div>
+                    </div>";
+
                 }else{
+                    // JAH APRESENTO A MATRIZ PARA PREENCHER NOS CASOS DE SER ESCALONAMENTOS
                     for ($i=0; $i < $row; $i++) { 
                         for ($j=0; $j < $column; $j++) { 
                             $matrix[$i][$j] = 0;
@@ -118,18 +131,32 @@
                     }
                     echo "</tbody>
                     </table>";
-                }
 
-                echo "<div class='row'>
+                    // AO CLICAR NESSE BTN ok REALIZAR A VERIFICACAO SE EH PERMITIDO A MULTIPLICACAO/SOMA
+                    echo "<div class='row'>
                     <div>
                         <a class='rounded-pill btn btn-outline-info mt-5 btnGoToBack' href='http://localhost/mestreMatrizes/'>
                             <svg xmlns='http://www.w3.org/2000/svg' width='25' height='25' fill='currentColor' class='bi bi-arrow-left' viewBox='0 0 16 16'>
                                 <path fill-rule='evenodd' d='M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8'/>
                             </svg>
                         </a>
-                        <button class='rounded-pill btn btn-outline-info mt-5 btnOk' type='submit'>OK</button>
-                    </div>
-                </div>";
+                            <button id='submit' class='rounded-pill btn btn-outline-info mt-5 btnOk' type='submit'>OK</button>
+                        </div>
+                    </div>";
+                }
+
+                // echo "<div class='row'>
+                //     <div>
+                //         <a class='rounded-pill btn btn-outline-info mt-5 btnGoToBack' href='http://localhost/mestreMatrizes/'>
+                //             <svg xmlns='http://www.w3.org/2000/svg' width='25' height='25' fill='currentColor' class='bi bi-arrow-left' viewBox='0 0 16 16'>
+                //                 <path fill-rule='evenodd' d='M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8'/>
+                //             </svg>
+                //         </a>
+                //         <button id='submit' class='rounded-pill btn btn-outline-info mt-5 btnOk' type='button' onclick='AddActionForm()'>OK</button>
+                //     </div>
+                // </div>";
+
+
             }
             ?>
             
@@ -139,4 +166,11 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" 
     integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" 
     crossorigin="anonymous"></script>
+    <script src="script.js"></script>
 </html>
+
+<!-- 
+    * EM ADICAO/MULTIPLICACAO, QUANDO O N DE COLUNAS E DE LINHAS DAS MATRIZES NAO SAO IGUAIS, ELE NAO DAH UMA MENSAGEM DE ERRO, NEM ACEITA A CORRECAO
+    * QUANDO O N DE COLUNAS OU LINHAS EH NULL, ELE ACUSA ERRO E MOSTRA A MENSAGEM DE MATRIZ VAZIA
+    * NA PAGINA RESOLUTION.PHP MUDAR O BOTAO VOLTAR PARA NAO APAGAR A MATRIZ PREENCHIDA // TALVEZ SEPARAR EM DUAS PAGINAS
+-->
