@@ -34,38 +34,36 @@
             return true;
         }
         
-        public function _addition($outher){
-            $answer = __construct($this->column, $this->row);
+        public function addition($matrix, $outher){
+            $answer = new Matrix($this->column, $this->row);
             for ($i=0; $i < $this->row; $i++) 
                 for ($j=0; $j < $this->column; $j++) 
-                    $answer = $this->matrix[$i][$j] + $outher->getMatrix()[$i][$j];
+                    $array[$i][$j] = ((int)($matrix[$i][$j]) + (int)($outher[$i][$j]));  
+            $answer->receberMatriz($array);                  
             return $answer;
         }
 
         public function canAdditionMatrix($outher){
-            if ($this->matrix == null || $outher == null)
-                return false;
-            if($this->row == $outher->getRow() && $this->column == $outher->getColumn())
+            if(($this->row == $outher->getRow()) && ($this->column == $outher->getColumn()))
                 return true;
             return false;
         }
         
-        private function multiplication($outher){
-            /* TRADURIR O CODIGO DE PYTHON PARA PHP
-            
-            for linhaResposta in range(2):
-                for colunaResposta in range(3):
-                    value = 0
-                    for colunaPrimeira in range(2):
-                        value = value + (primeira[linhaResposta][colunaPrimeira] * segunda[colunaPrimeira][colunaResposta])
-                    terceira[linhaResposta][colunaResposta] = value
-            */
+        public function multiplication($matrix, $outher){
+            $answer = new Matrix(count($outher[0]), $this->column);
+            for ($i=0; $i < $this->column; $i++) 
+                for ($j=0; $j < count($outher[0]); $j++) { 
+                    $value = 0;
+                    for ($k=0; $k < $this->column; $k++)
+                        $value += ((int)($matrix[$i][$k]) * (int)($outher[$k][$j]));
+                    $array[$i][$j] = $value;
+                }
+            $answer->receberMatriz($array);
+            return $answer;
         }
 
         public function canMultiplicationMatrix($outher){
-            if($this->matrix == null || $outher == null)
-                return false;
-            if($this->row == $outher->getColumn())
+            if($this->column == $outher->getRow())
                 return true;
             return false;
         }
@@ -171,6 +169,10 @@
 
         public function getColumn(){
             return $this->column;
+        }
+
+        public function getRow(){
+            return $this->row;
         }
     }
 ?>

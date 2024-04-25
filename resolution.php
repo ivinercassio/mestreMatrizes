@@ -2,31 +2,41 @@
 <?php
     include("Matrix.php");
 
-    if (!isset($_POST["row"]) || !isset($_POST["column"]) || !isset($_POST["function"])) {
+    if (!isset($_POST["row"]) || !isset($_POST["column"]) || !isset($_POST["function"])) 
         header('Location: http://localhost/mestreMatrizes/index.php');
-    }
 
     $row = $_POST["row"];
     $column = $_POST["column"];
     $function = $_POST["function"];
 
-    if(isset($_POST["row2"]) && isset($_POST["column2"])){
-        $row2 = $_POST["row2"];
-        $column2 = $_POST["column2"];
-    }
-
-    for ($i=0; $i < $row; $i++) { 
+    for ($i=0; $i < $row; $i++) 
         for ($j=0; $j < $column; $j++) { 
             $name = "cell" . $i . "" . $j;
             if(isset($_POST[$name]))
                 $matrix[$i][$j] = $_POST[$name];
         }
-    }
 
     $objMatrix = new Matrix($column, $row);
-    if(isset($matrix)){
+    if($matrix != null)
         $objMatrix->receberMatriz($matrix);
+
+    if(isset($_POST["row2"]) && isset($_POST["column2"])){
+        $row2 = $_POST["row2"];
+        $column2 = $_POST["column2"];
+
+        $matrix = null;
+        for ($i=0; $i < $row2; $i++) 
+            for ($j=0; $j < $column2; $j++) { 
+                $name = "cell2" . $i . "" . $j;
+                if(isset($_POST[$name]))
+                    $matrix[$i][$j] = $_POST[$name];
+            }
+
+        $objMatrix2 = new Matrix($column2, $row2);
+        if($matrix != null)
+            $objMatrix2->receberMatriz($matrix);
     }
+
 ?>
 
 <!DOCTYPE html>
@@ -53,15 +63,29 @@
                 if(isset($matrix)){
                     for ($i=0; $i < $row; $i++) { 
                         echo "<tr>";
-                        for ($j=0; $j < $column; $j++) { 
-                            echo "<td><input class='form-control disabled' type='number' name='{$name}' id='{$name}' value='{$matrix[$i][$j]}' disabled></td>";
-                        }
+                        for ($j=0; $j < $column; $j++) 
+                            echo "<td><input class='form-control disabled' type='number' value='{$objMatrix->getMatrix()[$i][$j]}' disabled></td>";
                         echo "</tr>";
                     }
                 }
             ?>
             </tbody>
         </table>
+        <?php
+            if (isset($column2) && isset($row2)) {
+                echo "<br><br>
+                <table align='center'>
+                <tbody>";
+                for ($i=0; $i < $row2; $i++) { 
+                    echo "<tr>";
+                    for ($j=0; $j < $column2; $j++) 
+                        echo "<td><input class='form-control disabled' type='number' value='{$objMatrix2->getMatrix()[$i][$j]}' disabled></td>";
+                    echo "</tr>";
+                }
+                echo "</tbody>
+                </table>";
+            }
+        ?>
 
         <form action="" method="post">
             <h5>Resultado:</h5>
@@ -74,8 +98,11 @@
                         case "GJ":
                             echo "Matriz Reduzida por Gauss-Jordan";
                             break;
-                        default:
-                            echo "Matriz Calculada";
+                        case "A":
+                            echo "Matriz Soma Calculada";
+                            break;
+                        case "M":
+                            echo "Matriz Produto Calculada";
                             break;
                     }
                 ?>
@@ -104,15 +131,16 @@
                                 $objMatrix->reduzirMatrizPorLinhas();
                                 break;
                             case "A":
-                                $answer = $objMatrix->addition($objMatrix2);
+                                // estah dando erro dentro da funcao ADDITION
+                                $answer = $objMatrix->addition($objMatrix->getMatrix(), $objMatrix2->getMatrix());
                                 break;
-                            default:
-                                $answer = $objMatrix->multiplication($objMatrix2);
+                            case "M":
+                                $answer = $objMatrix->multiplication($objMatrix->getMatrix(), $objMatrix2->getMatrix());
                                 break;
                         }
                         
     
-                        if($function == "A" || $function == "B")
+                        if($function == "A" || $function == "M")
                             for ($i=0; $i < $answer->getRow(); $i++) { 
                                 echo "<tr>";
                                 for ($j=0; $j < $answer->getColumn(); $j++) 
